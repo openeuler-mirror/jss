@@ -3,9 +3,10 @@ Summary:       Java Security Services
 URL:           http://www.dogtagpki.org/wiki/JSS
 License:       MPLv1.1 or GPLv2+ or LGPLv2+
 Version:       4.6.2
-Release:       3
+Release:       4
 Source:        https://github.com/dogtagpki/jss/archive/v%{version}/jss-%{version}.tar.gz
 Patch0001:     0001-Fix-NativeProxy-reference-tracker.patch
+Patch0002:     Move-from-_NETSCAPE_-to-_NSS_-PKCS#11-constants.patch
 
 BuildRequires: git make cmake gcc-c++ nspr-devel >= 4.13.1 nss-devel >= 3.30 nss-tools >= 3.30 java-devel
 BuildRequires: jpackage-utils slf4j glassfish-jaxb-api slf4j-jdk14 apache-commons-lang apache-commons-codec
@@ -78,5 +79,8 @@ cp -rp build/docs/* jss.html *.txt $RPM_BUILD_ROOT%{_javadocdir}/jss-%{version}
 %{_javadocdir}/jss-%{version}/
 
 %changelog
+* Wed Aug 05 2020 lingsheng <lingsheng@huawei.com> - 4.6.2-4
+- Fix build with nss 3.54
+
 * Thu Apr 16 2020 lizhenhua <lizhenhua21@huawei.com> - 4.6.2-3
 - Package init
