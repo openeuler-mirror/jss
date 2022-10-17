@@ -3,12 +3,12 @@ Summary:       Java Security Services
 URL:           http://www.dogtagpki.org/wiki/JSS
 License:       MPLv1.1 or GPLv2+ or LGPLv2+
 Version:       4.6.2
-Release:       4
+Release:       5
 Source:        https://github.com/dogtagpki/jss/archive/v%{version}/jss-%{version}.tar.gz
 Patch0001:     0001-Fix-NativeProxy-reference-tracker.patch
 Patch0002:     Move-from-_NETSCAPE_-to-_NSS_-PKCS#11-constants.patch
 
-BuildRequires: git make cmake gcc-c++ nspr-devel >= 4.13.1 nss-devel >= 3.30 nss-tools >= 3.30 java-devel
+BuildRequires: make cmake gcc-c++ nspr-devel >= 4.13.1 nss-devel >= 3.30 nss-tools >= 3.30 java-devel
 BuildRequires: jpackage-utils slf4j glassfish-jaxb-api slf4j-jdk14 apache-commons-lang apache-commons-codec
 BuildRequires: junit
 
@@ -29,7 +29,7 @@ Obsoletes:     jss-javadoc < %{version}-%{release}
 API documentation for JSS.
 
 %prep
-%autosetup -n jss-%{version} -p 1 -S git
+%autosetup -n jss-%{version} -p 1
 
 %build
 
@@ -79,6 +79,9 @@ cp -rp build/docs/* jss.html *.txt $RPM_BUILD_ROOT%{_javadocdir}/jss-%{version}
 %{_javadocdir}/jss-%{version}/
 
 %changelog
+* Fri Jul 30 2021 chenyanpanHW <chenyanpan@huawei.com> - 4.6.2-5
+- DESC: delete -S git from %autosetup, and delete BuildRequires git
+
 * Wed Aug 05 2020 lingsheng <lingsheng@huawei.com> - 4.6.2-4
 - Fix build with nss 3.54
 
