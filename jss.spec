@@ -3,8 +3,8 @@ Summary:       Java Security Services
 URL:           http://www.dogtagpki.org/wiki/JSS
 License:       MPLv1.1 or GPLv2+ or LGPLv2+
 Version:       5.1.0
-Release:       1
-Source:        https://github.com/dogtagpki/jss/archive/refs/tags/jss-%{version}.tar.gz
+Release:       2
+Source:        https://github.com/dogtagpki/jss/archive/v%{version}/jss-%{version}.tar.gz
 
 BuildRequires: make cmake gcc-c++ nspr-devel >= 4.13.1 nss-devel >= 3.30 nss-tools >= 3.30 java-devel
 BuildRequires: jpackage-utils slf4j glassfish-jaxb-api slf4j-jdk14 apache-commons-lang apache-commons-codec
@@ -84,6 +84,9 @@ cp -rp build/docs/* jss.html *.txt $RPM_BUILD_ROOT%{_javadocdir}/jss-%{version}
 %{_javadocdir}/jss-%{version}/
 
 %changelog
+* Thu Nov 10 2022 caodongxia <caodongxia@h-partners.com> - 5.1.0-2
+- Modify invalid source0
+
 * Mon Jun 06 2022 Ge Wang <wangge20@h-partners.com> - 5.1.0-1
 - Upgrade version to 5.1.0
 
