@@ -1,23 +1,24 @@
+%bcond_without javadoc
+
+%bcond_with tests
+
+%define java_home %{_jvmdir}/jre-17-openjdk
+
 Name:          jss
 Summary:       Java Security Services
 URL:           http://www.dogtagpki.org/wiki/JSS
 License:       MPLv1.1 or GPLv2+ or LGPLv2+
-Version:       5.1.0
+Version:       5.3.0
 Release:       1
 Source:        https://github.com/dogtagpki/jss/archive/refs/tags/jss-%{version}.tar.gz
 
-BuildRequires: make cmake gcc-c++ nspr-devel >= 4.13.1 nss-devel >= 3.30 nss-tools >= 3.30 java-devel
-BuildRequires: jpackage-utils slf4j glassfish-jaxb-api slf4j-jdk14 apache-commons-lang apache-commons-codec
-BuildRequires: junit
+BuildRequires: make cmake >= 3.14 gcc-c++ nspr-devel >= 4.13.1 nss-devel >= 3.66 nss-tools >= 3.66
+BuildRequires: jpackage-utils slf4j glassfish-jaxb-api slf4j-jdk14 apache-commons-codec junit
+BuildRequires: zip unzip java-17-openjdk-devel apache-commons-lang3
 
-BuildRequires: zip unzip java-11-openjdk-devel apache-commons-lang3
+Requires:      nss >= 3.66  jpackage-utils slf4j slf4j-jdk14 java-17-openjdk-headless apache-commons-lang3
 
-Requires:      nss >= 3.30 java-headless jpackage-utils slf4j glassfish-jaxb-api
-Requires:      slf4j-jdk14 apache-commons-lang apache-commons-codec
-
-Requires: java-11-openjdk-headless apache-commons-lang3
-
-Conflicts:     ldapjdk < 4.20 idm-console-framework < 1.2 tomcatjss < 7.3.4 pki-base < 10.6.5
+Conflicts:     ldapjdk < 4.20 idm-console-framework < 1.2 tomcatjss < 7.6.0 pki-base < 10.10.0
 
 %description
 JSS offers a implementation for java-based applications to use native NSS.
@@ -36,54 +37,54 @@ API documentation for JSS.
 %build
 
 %set_build_flags
-home_path=`ls /usr/lib/jvm | grep java-11-openjdk`
-[ -z "$JAVA_HOME" ] && export JAVA_HOME=%{_jvmdir}/${home_path}
+
+export JAVA_HOME=%{java_home}
 
 export BUILD_OPT=1
 
-export CFLAGS="-g $RPM_OPT_FLAGS"
+CFLAGS="-g $RPM_OPT_FLAGS"
+export CFLAGS
 
 modutil -dbdir /etc/pki/nssdb -chkfips true | grep -q enabled && export FIPS_ENABLED=1
 
-
 ./build.sh \
     %{?_verbose:-v} \
-    --work-dir=build \
-    --jni-dir=%{_jnidir} \
+    --work-dir=%{_vpath_builddir} \
+    --prefix-dir=%{_prefix} \
+    --include-dir=%{_includedir} \
     --lib-dir=%{_libdir} \
+    --sysconf-dir=%{_sysconfdir} \
+    --share-dir=%{_datadir} \
+    --cmake=%{__cmake} \
+    --java-home=%{java_home} \
+    --jni-dir=%{_jnidir} \
     --version=%{version} \
+    %{!?with_javadoc:--without-javadoc} \
+    %{?with_tests:--with-tests} \
     dist
 
 %install
-mkdir -p $RPM_BUILD_ROOT%{_jnidir}
-chmod 755 $RPM_BUILD_ROOT%{_jnidir}
-cp build/jss.jar ${RPM_BUILD_ROOT}%{_jnidir}
-chmod 644 ${RPM_BUILD_ROOT}%{_jnidir}/jss.jar
-
-mkdir -p $RPM_BUILD_ROOT%{_libdir}/jss
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/jss
-cp build/libjss.so ${RPM_BUILD_ROOT}%{_libdir}/jss
-chmod 755 ${RPM_BUILD_ROOT}%{_libdir}/jss/libjss.so
-
-pushd  ${RPM_BUILD_ROOT}%{_libdir}/jss
-ln -fs %{_jnidir}/jss.jar jss.jar
-popd
-
-mkdir -p $RPM_BUILD_ROOT%{_javadocdir}/jss-%{version}
-chmod 755 $RPM_BUILD_ROOT%{_javadocdir}/jss-%{version}
-cp -rp build/docs/* jss.html *.txt $RPM_BUILD_ROOT%{_javadocdir}/jss-%{version}
+./build.sh \
+    %{?_verbose:-v} \
+    --work-dir=%{_vpath_builddir} \
+    --install-dir=%{buildroot} \
+    install
 
 %files
 %defattr(-,root,root,-)
-%doc jss.html MPL-1.1.txt gpl.txt lgpl.txt
+%doc jss.html 
+%license MPL-1.1.txt gpl.txt lgpl.txt symkey/LICENSE
 %{_libdir}/*
 %{_jnidir}/*
 
 %files help
 %defattr(-,root,root,-)
-%{_javadocdir}/jss-%{version}/
+%{_javadocdir}/jss/
 
 %changelog
+* Thu Feb 23 2023 lilong <lilong@kylinos.cn> - 5.3.0-1
+- Upgrade to 5.3.0
+
 * Mon Jun 06 2022 Ge Wang <wangge20@h-partners.com> - 5.1.0-1
 - Upgrade version to 5.1.0
 
