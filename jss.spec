@@ -8,9 +8,9 @@ Name:          jss
 Summary:       Java Security Services
 URL:           http://www.dogtagpki.org/wiki/JSS
 License:       MPLv1.1 or GPLv2+ or LGPLv2+
-Version:       5.3.0
+Version:       5.4.0
 Release:       1
-Source:        https://github.com/dogtagpki/jss/archive/refs/tags/jss-%{version}.tar.gz
+Source0:       https://github.com/dogtagpki/jss/archive/v%{version}/%{name}-%{version}.tar.gz 
 
 BuildRequires: make cmake >= 3.14 gcc-c++ nspr-devel >= 4.13.1 nss-devel >= 3.66 nss-tools >= 3.66
 BuildRequires: jpackage-utils slf4j glassfish-jaxb-api slf4j-jdk14 apache-commons-codec junit
@@ -82,6 +82,9 @@ modutil -dbdir /etc/pki/nssdb -chkfips true | grep -q enabled && export FIPS_ENA
 %{_javadocdir}/jss/
 
 %changelog
+* Wed Apr 26 2023 xu_ping <707078654@qq.com> - 5.4.0-1
+- Upgrade to 5.4.0
+
 * Thu Feb 23 2023 lilong <lilong@kylinos.cn> - 5.3.0-1
 - Upgrade to 5.3.0
 
